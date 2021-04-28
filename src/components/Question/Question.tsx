@@ -25,7 +25,7 @@ interface QuestionProps {
     saveOption: (option: number) => void;
 }
 
-const Question: React.FC<QuestionProps> = (props: QuestionProps) => {
+const Question: React.FC<QuestionProps> = ({ saveOption }) => {
     const questionState: QuestionsState = useSelector((state: RootState) => state.question);
     const quiz: QuizState = useSelector((state: RootState) => state.quiz);
 
@@ -33,8 +33,8 @@ const Question: React.FC<QuestionProps> = (props: QuestionProps) => {
     const question: QuestionType = questionState.questions[qNo];
 
     const renderOptions = useMemo(() => {
-        return makeOptions(question.options, quiz.selectedOption, props.saveOption);
-    }, [props.saveOption, question.options, quiz.selectedOption]);
+        return makeOptions(question.options, quiz.selectedOption, saveOption);
+    }, [saveOption, question.options, quiz.selectedOption]);
 
     return (
         <Fragment>

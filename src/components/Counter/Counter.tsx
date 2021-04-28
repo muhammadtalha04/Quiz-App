@@ -9,14 +9,15 @@ interface CounterProps {
     submit: () => void;
 }
 
-const Counter: React.FC<CounterProps> = (props: CounterProps) => {
+const Counter: React.FC<CounterProps> = ({ submit }) => {
+
     const dispatch = useDispatch();
     const timer: TimerState = useSelector((state: RootState) => state.timer);
     const quiz: QuizState = useSelector((state: RootState) => state.quiz);
 
     useEffect(() => {
         if (timer.timer === "00 : 00") {
-            props.submit();     // Submit the quiz
+            submit();     // Submit the quiz
         } else if (quiz.status === "in-progress") {
             if (timer.intervalId === -1) {
                 const intvId = setInterval(() => {
@@ -26,7 +27,7 @@ const Counter: React.FC<CounterProps> = (props: CounterProps) => {
                 dispatch({ type: SET_INTERVAL, payload: { intervalId: intvId } });
             }
         }
-    }, [dispatch, timer, props, quiz.status]);
+    }, [dispatch, timer, submit, quiz.status]);
 
     return (
         <CounterWrapper>

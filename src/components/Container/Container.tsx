@@ -27,7 +27,7 @@ interface ContainerProps {
     onCancel: MouseEventHandler<HTMLButtonElement>;
 }
 
-const Container: React.FC<ContainerProps> = (props: ContainerProps) => {
+const Container: React.FC<ContainerProps> = ({ generateRandomQues, addQuestions, startQuiz, resumeQuiz, cancelQuiz, saveOption, onQuestionChange, onOptionChange, onCorrectOptionChange, onClickAddOption, onClickAddQues, onSaveQuestion, onCancel }) => {
     const quiz: QuizState = useSelector((state: RootState) => state.quiz);
     const questionState: QuestionsState = useSelector((state: RootState) => state.question);
 
@@ -61,7 +61,7 @@ const Container: React.FC<ContainerProps> = (props: ContainerProps) => {
                             text={Random}
                             gradient={true}
                             width="full"
-                            onClick={props.generateRandomQues}
+                            onClick={generateRandomQues}
                             margin={true}
                         />
                         {/* Make Quiz Button */}
@@ -69,7 +69,7 @@ const Container: React.FC<ContainerProps> = (props: ContainerProps) => {
                             text={AddQues}
                             gradient={true}
                             width="full"
-                            onClick={props.addQuestions}
+                            onClick={addQuestions}
                             margin={true}
                         />
                         {/* Play Quiz Button */}
@@ -77,7 +77,7 @@ const Container: React.FC<ContainerProps> = (props: ContainerProps) => {
                             text={Play}
                             gradient={true}
                             width="full"
-                            onClick={props.startQuiz}
+                            onClick={startQuiz}
                             margin={true}
                         />
                     </ButtonsWrapper>
@@ -91,7 +91,7 @@ const Container: React.FC<ContainerProps> = (props: ContainerProps) => {
                         text={Resume}
                         gradient={true}
                         width="full"
-                        onClick={props.resumeQuiz}
+                        onClick={resumeQuiz}
                         margin={true}
                     />
                     {/* Cancel Quiz Button */}
@@ -99,7 +99,7 @@ const Container: React.FC<ContainerProps> = (props: ContainerProps) => {
                         text={Cancel}
                         gradient={true}
                         width="full"
-                        onClick={props.cancelQuiz}
+                        onClick={cancelQuiz}
                         margin={true}
                     />
                 </ButtonsWrapper>
@@ -108,7 +108,7 @@ const Container: React.FC<ContainerProps> = (props: ContainerProps) => {
                 quiz.status === "in-progress" &&
                 (
                     <Question
-                        saveOption={props.saveOption}
+                        saveOption={saveOption}
                     />
                 )
             }
@@ -116,13 +116,13 @@ const Container: React.FC<ContainerProps> = (props: ContainerProps) => {
                 quiz.status === "add-questions" &&
                 (
                     <Form
-                        onQuestionChange={props.onQuestionChange}
-                        onOptionChange={props.onOptionChange}
-                        onCorrectOptionChange={props.onCorrectOptionChange}
-                        onClickAddOption={props.onClickAddOption}
-                        onClickAddQues={props.onClickAddQues}
-                        onSaveQuestion={props.onSaveQuestion}
-                        onCancel={props.onCancel}
+                        onQuestionChange={onQuestionChange}
+                        onOptionChange={onOptionChange}
+                        onCorrectOptionChange={onCorrectOptionChange}
+                        onClickAddOption={onClickAddOption}
+                        onClickAddQues={onClickAddQues}
+                        onSaveQuestion={onSaveQuestion}
+                        onCancel={onCancel}
                     />
                 )
             }

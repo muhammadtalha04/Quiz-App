@@ -10,12 +10,12 @@ interface ModalProps {
     onClickNo: MouseEventHandler<HTMLButtonElement>;
 }
 
-const Modal: React.FC<ModalProps> = (props: ModalProps) => {
+const Modal: React.FC<ModalProps> = ({ text, onClickYes, onClickNo }) => {
     return (
         <ModalDiv>
             <ModalContent>
                 <TextWrapper>
-                    <Text text={props.text} />
+                    <Text text={text} />
                 </TextWrapper>
 
                 <ActionButtons>
@@ -24,14 +24,14 @@ const Modal: React.FC<ModalProps> = (props: ModalProps) => {
                         gradient={true}
                         width="auto"
                         margin={true}
-                        onClick={props.onClickYes}
+                        onClick={onClickYes}
                     />
                     <Button
                         text={No}
                         gradient={true}
                         width="auto"
                         margin={true}
-                        onClick={props.onClickNo}
+                        onClick={onClickNo}
                     />
                 </ActionButtons>
             </ModalContent>

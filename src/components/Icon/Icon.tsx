@@ -9,10 +9,10 @@ interface IconProps {
     bold?: boolean;
 }
 
-const Icon: React.FC<IconProps> = (props: IconProps) => {
+const Icon: React.FC<IconProps> = ({ icon, color, size, bold, onClick }) => {
     return (
-        <Span onClick={props.onClick}>
-            <I className={props.icon} color={props.color} size={props.size} bold={props.bold} />
+        <Span onClick={onClick}>
+            <I className={icon} color={color} size={size} bold={bold} />
         </Span>
     );
 }

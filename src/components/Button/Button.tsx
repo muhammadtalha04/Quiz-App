@@ -10,15 +10,15 @@ interface ButtonProps {
     margin?: boolean;
 }
 
-const Button: React.FC<ButtonProps> = (props: ButtonProps) => {
+const Button: React.FC<ButtonProps> = ({ text, gradient, width, margin, onClick }) => {
     return (
         <CustomButton
-            width={props.width}
-            gradient={props.gradient}
-            onClick={props.onClick}
-            margin={props.margin}
+            width={width}
+            gradient={gradient}
+            onClick={onClick}
+            margin={margin}
         >
-            {props.text}
+            {text}
         </CustomButton>
     );
 }

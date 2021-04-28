@@ -9,11 +9,11 @@ interface TextProps {
     margin?: number;
 }
 
-const Text: React.FC<TextProps> = (props: TextProps) => {
+const Text: React.FC<TextProps> = ({ text, fontSize, fontWeight, color, margin }) => {
     return (
-        <TextWrapper fontWeight={props.fontWeight} fontSize={props.fontSize} color={props.color} margin={props.margin}>
+        <TextWrapper fontWeight={fontWeight} fontSize={fontSize} color={color} margin={margin}>
             {
-                props.text
+                text
             }
         </TextWrapper>
     );

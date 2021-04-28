@@ -29,16 +29,16 @@ interface QuestionProps extends FormProps, FormState {
 
 // ================ FUNCTIONS ==========================
 const makeOptionInputs = (numOfOpt: number, qNo: number, formProps: OptionProps) => {
+    const { value, onOptionChange } = formProps;
     const optInputs: JSX.Element[] = [];
-
 
     for (let i = 0; i < numOfOpt; i++) {
         const elem: JSX.Element = (
             <FormGroup key={i}>
                 <Input
-                    value={formProps.value[i]}
+                    value={value[i]}
                     placeholder={`${OptionPlaceholder} ${i + 1}`}
-                    onInputChange={(e) => formProps.onOptionChange(e, i, qNo)}
+                    onInputChange={(e) => onOptionChange(e, i, qNo)}
                 />
             </FormGroup>
         );
@@ -107,24 +107,24 @@ const makeQuestions = (form: QuestionProps) => {
 }
 
 // ================== COMPONENT ========================
-const Form: React.FC<FormProps> = (props: FormProps) => {
+const Form: React.FC<FormProps> = ({ onQuestionChange, onOptionChange, onCorrectOptionChange, onClickAddOption, onClickAddQues, onSaveQuestion, onCancel }) => {
     const formState: FormState = useSelector((state: RootState) => state.form);
 
     const renderQuestions = useMemo(() => {
         const params: QuestionProps = {
             questions: formState.questions,
             numOfQuestions: formState.numOfQuestions,
-            onQuestionChange: props.onQuestionChange,
-            onOptionChange: props.onOptionChange,
-            onCorrectOptionChange: props.onCorrectOptionChange,
-            onClickAddOption: props.onClickAddOption,
-            onClickAddQues: props.onClickAddQues,
-            onSaveQuestion: props.onSaveQuestion,
-            onCancel: props.onCancel,
+            onQuestionChange: onQuestionChange,
+            onOptionChange: onOptionChange,
+            onCorrectOptionChange: onCorrectOptionChange,
+            onClickAddOption: onClickAddOption,
+            onClickAddQues: onClickAddQues,
+            onSaveQuestion: onSaveQuestion,
+            onCancel: onCancel,
         }
 
         return makeQuestions(params);
-    }, [formState, props]);
+    }, [formState, onQuestionChange, onOptionChange, onCorrectOptionChange, onClickAddOption, onClickAddQues, onSaveQuestion, onCancel]);
 
     return (
         <FormWrapper>
@@ -139,7 +139,7 @@ const Form: React.FC<FormProps> = (props: FormProps) => {
                     text={AddQuestion}
                     width="auto"
                     gradient={true}
-                    onClick={props.onClickAddQues}
+                    onClick={onClickAddQues}
                 />
 
                 {/* Save question button */}
@@ -147,7 +147,7 @@ const Form: React.FC<FormProps> = (props: FormProps) => {
                     text={SaveQuestion}
                     width="auto"
                     gradient={true}
-                    onClick={props.onSaveQuestion}
+                    onClick={onSaveQuestion}
                     margin={true}
                 />
 
@@ -156,7 +156,7 @@ const Form: React.FC<FormProps> = (props: FormProps) => {
                     text={Cancel}
                     width="auto"
                     gradient={true}
-                    onClick={props.onCancel}
+                    onClick={onCancel}
                 />
             </FormGroup>
         </FormWrapper>

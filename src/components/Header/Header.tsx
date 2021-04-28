@@ -18,7 +18,7 @@ interface HeaderProps {
     onTimerEnd: () => void;
 }
 
-const Header: React.FC<HeaderProps> = (props: HeaderProps) => {
+const Header: React.FC<HeaderProps> = ({ goBack, cancelQuiz, submitQues, onTimerEnd }) => {
     const questionState: QuestionsState = useSelector((state: RootState) => state.question);
     const quiz: QuizState = useSelector((state: RootState) => state.quiz);
 
@@ -55,14 +55,14 @@ const Header: React.FC<HeaderProps> = (props: HeaderProps) => {
                                 color={secondary}
                                 size={25}
                                 bold={true}
-                                onClick={props.goBack}
+                                onClick={goBack}
                             />
                         </LeftAlign>
 
                         {/* Remaining time to attempt the current question */}
                         <CenterAlign>
                             <Counter
-                                submit={props.onTimerEnd}
+                                submit={onTimerEnd}
                             />
                         </CenterAlign>
 
@@ -72,7 +72,7 @@ const Header: React.FC<HeaderProps> = (props: HeaderProps) => {
                                 text={Cancel}
                                 gradient={false}
                                 width="auto"
-                                onClick={props.cancelQuiz}
+                                onClick={cancelQuiz}
                             />
                             {
                                 (quiz.currentQuestion !== quesLength - 1) ?
@@ -81,7 +81,7 @@ const Header: React.FC<HeaderProps> = (props: HeaderProps) => {
                                             text={Submit}
                                             gradient={false}
                                             width="auto"
-                                            onClick={props.submitQues}
+                                            onClick={submitQues}
                                         />
                                     ) :
                                     (
@@ -89,7 +89,7 @@ const Header: React.FC<HeaderProps> = (props: HeaderProps) => {
                                             text={Finish}
                                             gradient={false}
                                             width="auto"
-                                            onClick={props.submitQues}
+                                            onClick={submitQues}
                                         />
                                     )
                             }

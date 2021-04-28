@@ -11,16 +11,15 @@ interface OptionProps {
     saveOption: (option: number) => void;
 }
 
-const Option: React.FC<OptionProps> = (props: OptionProps) => {
+const Option: React.FC<OptionProps> = ({ text, optInd, optNo, selected, saveOption }) => {
     return (
-        <OptionWrapper selected={props.selected} onClick={() => props.saveOption(props.optInd)}>
-            <Opt selected={props.selected}>{`${props.optNo} .`}</Opt>
+        <OptionWrapper selected={selected} onClick={() => saveOption(optInd)}>
+            <Opt selected={selected}>{`${optNo} .`}</Opt>
             {
-                props.selected === true ?
-                    (<Text text={props.text} fontWeight="bold" margin={0} color={secondary} />) :
-                    (<Text text={props.text} fontWeight="bold" margin={0} />)
+                selected === true ?
+                    (<Text text={text} fontWeight="bold" margin={0} color={secondary} />) :
+                    (<Text text={text} fontWeight="bold" margin={0} />)
             }
-
         </OptionWrapper>
     );
 }

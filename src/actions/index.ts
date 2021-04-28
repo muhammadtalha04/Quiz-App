@@ -1,0 +1,28 @@
+// QUIZ
+export const START_QUIZ = 'START_QUIZ';
+export const PAUSE_QUIZ = 'PAUSE_QUIZ';
+export const RESUME_QUIZ = 'RESUME_QUIZ';
+export const SUBMIT_QUESTION = 'SUBMIT_QUESTION';
+export const SUBMIT_QUIZ = 'SUBMIT_QUIZ';
+export const QUIT_QUIZ = 'QUIT_QUIZ';
+export const INCREMENT_SCORE = 'INCREMENT_SCORE';
+export const SET_OPTION = 'SET_OPTION';
+export const ADD_TIME_TAKEN = 'ADD_TIME_TAKEN';
+export const ADD_QUESTIONS = 'ADD_QUESTIONS';
+export const DEFAULT_STATE = 'DEFAULT_STATE';
+
+// QUESTIONS
+export const SET_QUESTIONS = 'SET_QUESTIONS';
+
+// TIMER
+export const DECREMENT_TIMER = 'DECREMENT_TIMER';
+export const SET_INTERVAL = 'SET_INTERVAL';
+export const CLEAR_INTERVAL = 'CLEAR_INTERVAL';
+
+// FORM
+export const SET_FORM_QUESTION = 'SET_FORM_QUESTION';
+export const SET_FORM_OPTION = 'SET_FORM_OPTION';
+export const SET_CORRECT_OPTION = 'SET_CORRECT_OPTION';
+export const INC_OPTIONS_COUNT = 'INC_OPTIONS_COUNT';
+export const INC_QUES_COUNT = 'INC_QUES_COUNT';
+export const RESET_FORM = 'RESET_FORM';

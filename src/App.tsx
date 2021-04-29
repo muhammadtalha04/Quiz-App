@@ -1,6 +1,4 @@
 import React, { ChangeEvent, Fragment, useCallback, useState } from 'react';
-import Container from './components/Container/Container';
-import Header from './components/Header/Header';
 import { CancelConfirm } from './constants';
 import { GlobalStyle, Wrapper } from './Style';
 import { useDispatch, useSelector } from 'react-redux';
@@ -9,6 +7,8 @@ import Modal from './components/Modal/Modal';
 import { FormState, QuestionsState, QuizState, TimerState } from './types';
 import { RootState } from './store';
 import { generateRandomQuestions } from './utils';
+import Header from './pages/Home/Header/Header';
+import Content from './pages/Home/Content/Content';
 
 const App: React.FC = () => {
 	const dispatch = useDispatch();
@@ -31,7 +31,7 @@ const App: React.FC = () => {
 	const generateRandomQues = useCallback(() => {
 		const randomQues = generateRandomQuestions(numOfQuestions);
 
-		alert("Random questions generated successfully");
+		alert('Random questions generated successfully');
 
 		dispatch({ type: SET_QUESTIONS, payload: { questions: randomQues } });
 	}, [numOfQuestions, dispatch]);
@@ -80,7 +80,7 @@ const App: React.FC = () => {
 			dispatch({ type: INCREMENT_SCORE });
 		}
 
-		dispatch({ type: ADD_TIME_TAKEN, payload: { timeTaken: timer.timer } });
+		dispatch({ type: ADD_TIME_TAKEN, payload: { timeTaken: timer.time } });
 		clearInterval(timer.intervalId);
 		dispatch({ type: CLEAR_INTERVAL });
 
@@ -93,10 +93,13 @@ const App: React.FC = () => {
 	}, [dispatch, quiz.selectedOption, quiz.currentQuestion, questionState, timer]);
 	// ---------------------------------------------------
 
-	// Triggers when user selects an option 
-	const saveOption = useCallback((option: number) => {
-		dispatch({ type: SET_OPTION, payload: { selectedOption: option } });
-	}, [dispatch]);
+	// Triggers when user selects an option
+	const saveOption = useCallback(
+		(option: number) => {
+			dispatch({ type: SET_OPTION, payload: { selectedOption: option } });
+		},
+		[dispatch]
+	);
 	// ---------------------------------------------------
 
 	// Triggers when the user clicks the add questions button
@@ -112,46 +115,58 @@ const App: React.FC = () => {
 	// ---------------------------------------------------
 
 	// Question change handler
-	const onChangeQuestion = useCallback((event: ChangeEvent<HTMLInputElement>, qIndex: number) => {
-		dispatch({ type: SET_FORM_QUESTION, payload: { question: event.target.value, index: qIndex } });
-	}, [dispatch]);
+	const onChangeQuestion = useCallback(
+		(event: ChangeEvent<HTMLInputElement>, qIndex: number) => {
+			dispatch({ type: SET_FORM_QUESTION, payload: { question: event.target.value, index: qIndex } });
+		},
+		[dispatch]
+	);
 	// ---------------------------------------------------
 
 	// Option change handler
-	const onChangeOption = useCallback((event: ChangeEvent<HTMLInputElement>, index: number, qIndex: number) => {
-		dispatch({ type: SET_FORM_OPTION, payload: { option: event.target.value, index: index, qIndex: qIndex } });
-	}, [dispatch]);
+	const onChangeOption = useCallback(
+		(event: ChangeEvent<HTMLInputElement>, index: number, qIndex: number) => {
+			dispatch({ type: SET_FORM_OPTION, payload: { option: event.target.value, index: index, qIndex: qIndex } });
+		},
+		[dispatch]
+	);
 	// ---------------------------------------------------
 
 	// Correct option change handler
-	const onChangeCorrectOpt = useCallback((event: ChangeEvent<HTMLInputElement>, qIndex: number) => {
-		const value = event.target.value;
+	const onChangeCorrectOpt = useCallback(
+		(event: ChangeEvent<HTMLInputElement>, qIndex: number) => {
+			const value = event.target.value;
 
-		if ((parseInt(value) > 0 && parseInt(value) <= form.questions[qIndex].numOfOptions) || value === "") {
-			dispatch({ type: SET_CORRECT_OPTION, payload: { correctOption: value, index: qIndex } });
-		}
-	}, [dispatch, form.questions]);
+			if ((parseInt(value) > 0 && parseInt(value) <= form.questions[qIndex].numOfOptions) || value === '') {
+				dispatch({ type: SET_CORRECT_OPTION, payload: { correctOption: value, index: qIndex } });
+			}
+		},
+		[dispatch, form.questions]
+	);
 	// ---------------------------------------------------
 
 	// Triggers when user clicks on add new option button
-	const addNewOption = useCallback((qIndex: number) => {
-		dispatch({ type: INC_OPTIONS_COUNT, payload: { index: qIndex } });
-	}, [dispatch]);
+	const addNewOption = useCallback(
+		(qIndex: number) => {
+			dispatch({ type: INC_OPTIONS_COUNT, payload: { index: qIndex } });
+		},
+		[dispatch]
+	);
 	// ---------------------------------------------------
 
 	// Triggers when user clicks on add new question button
-	const addNewQues = useCallback(() => {
+	const addNewQuestion = useCallback(() => {
 		dispatch({ type: INC_QUES_COUNT });
 	}, [dispatch]);
 	// ---------------------------------------------------
 
 	// Triggers when user clicks on save question button
 	const saveQuestion = useCallback(() => {
-		const questions = form.questions.map(q => {
+		const questions = form.questions.map((q) => {
 			return {
 				question: q.question,
 				options: q.options,
-				correctOption: (q.correctOption === "") ? 0 : parseInt(q.correctOption) - 1
+				correctOption: q.correctOption === '' ? 0 : parseInt(q.correctOption) - 1,
 			};
 		});
 
@@ -164,48 +179,18 @@ const App: React.FC = () => {
 	return (
 		<Fragment>
 			{/* Modal */}
-			{
-				displayModal &&
-				(
-					<Modal
-						text={CancelConfirm}
-						onClickYes={cancelQuiz}
-						onClickNo={hideModal}
-					/>
-				)
-			}
+			{displayModal && <Modal text={CancelConfirm} onClickYes={cancelQuiz} onClickNo={hideModal} />}
 
 			{/* Content */}
 			<Wrapper>
+				<Header goBack={pauseQuiz} cancelQuiz={confirmCancel} submitQues={submitQuestion} onTimerEnd={submitQuestion} />
 
-				<Header
-					goBack={pauseQuiz}
-					cancelQuiz={confirmCancel}
-					submitQues={submitQuestion}
-					onTimerEnd={submitQuestion}
-				/>
-
-				<Container
-					generateRandomQues={generateRandomQues}
-					addQuestions={addQuestions}
-					startQuiz={startQuiz}
-					resumeQuiz={resumeQuiz}
-					cancelQuiz={confirmCancel}
-					saveOption={saveOption}
-					onQuestionChange={onChangeQuestion}
-					onOptionChange={onChangeOption}
-					onCorrectOptionChange={onChangeCorrectOpt}
-					onClickAddOption={addNewOption}
-					onClickAddQues={addNewQues}
-					onSaveQuestion={saveQuestion}
-					onCancel={cancelAddQuestions}
-				/>
-
+				<Content generateRandomQues={generateRandomQues} addQuestions={addQuestions} startQuiz={startQuiz} resumeQuiz={resumeQuiz} cancelQuiz={confirmCancel} saveOption={saveOption} onQuestionChange={onChangeQuestion} onOptionChange={onChangeOption} onCorrectOptionChange={onChangeCorrectOpt} onClickAddOption={addNewOption} onClickAddQuestion={addNewQuestion} onSaveQuestion={saveQuestion} onCancel={cancelAddQuestions} />
 			</Wrapper>
 
 			<GlobalStyle />
 		</Fragment>
 	);
-}
+};
 
 export default App;

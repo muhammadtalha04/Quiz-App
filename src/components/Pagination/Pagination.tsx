@@ -1,38 +1,45 @@
 import React, { useMemo } from 'react';
-import { useSelector } from 'react-redux';
 import { secondary } from '../../colors';
-import { RootState } from '../../store';
-import { QuestionsState, QuestionType, QuizState } from '../../types';
 import Icon from '../Icon/Icon';
 import { ActivePaginationItem, PaginationItem, PaginationWrapper } from './Style';
 
-const generatePageNums = (questions: QuestionType[], currentQuestion: number) => {
-    return Object.keys(questions).map(q => {
-        const qNo = parseInt(q);
+const generatePageNums = (questionNumbers: string[], currentQuestion: number) => {
+	return questionNumbers.map((questionNumber) => {
+		const questionNumberInt = parseInt(questionNumber);
 
-        if (qNo < currentQuestion) {
-            return (<PaginationItem checked={true} key={qNo}><Icon icon="fa fa-check" color={secondary} /></PaginationItem>);
-        } else if (qNo === currentQuestion) {
-            return (<ActivePaginationItem checked={false} key={qNo}>{qNo + 1}</ActivePaginationItem>);
-        } else {
-            return (<PaginationItem checked={false} key={qNo}>{qNo + 1}</PaginationItem>);
-        }
-    });
+		if (questionNumberInt < currentQuestion) {
+			return (
+				<PaginationItem checked={true} key={questionNumber}>
+					<Icon icon='fa fa-check' color={secondary} />
+				</PaginationItem>
+			);
+		} else if (questionNumberInt === currentQuestion) {
+			return (
+				<ActivePaginationItem checked={false} key={questionNumber}>
+					{questionNumberInt + 1}
+				</ActivePaginationItem>
+			);
+		} else {
+			return (
+				<PaginationItem checked={false} key={questionNumber}>
+					{questionNumberInt + 1}
+				</PaginationItem>
+			);
+		}
+	});
+};
+
+interface PaginationProps {
+	questionNumbers: string[];
+	currentQuestion: number;
 }
 
-const Pagination: React.FC = () => {
-    const questionState: QuestionsState = useSelector((state: RootState) => state.question);
-    const quiz: QuizState = useSelector((state: RootState) => state.quiz);
+const Pagination: React.FC<PaginationProps> = ({ questionNumbers, currentQuestion }) => {
+	const render = useMemo(() => {
+		return generatePageNums(questionNumbers, currentQuestion);
+	}, [questionNumbers, currentQuestion]);
 
-    const render = useMemo(() => {
-        return generatePageNums(questionState.questions, quiz.currentQuestion);
-    }, [questionState, quiz.currentQuestion]);
-
-    return (
-        <PaginationWrapper>
-            {render}
-        </PaginationWrapper>
-    );
-}
+	return <PaginationWrapper>{render}</PaginationWrapper>;
+};
 
 export default Pagination;

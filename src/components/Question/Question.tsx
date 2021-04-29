@@ -1,54 +1,36 @@
 import React, { Fragment, useMemo } from 'react';
-import { useSelector } from 'react-redux';
-import { RootState } from '../../store';
-import { Options, QuestionsState, QuestionType, QuizState } from '../../types';
+import { Options, QuestionType } from '../../types';
 import Option from '../Option/Option';
 import Text from '../Text/Text';
 import { QuestionWrapper } from './Style';
 
-const makeOptions = (options: string[], selectedInd: number, saveOption: (option: number) => void) => {
-    return options.map((o, ind) => {
-        return (
-            <Option
-                optInd={ind}
-                key={o}
-                text={o}
-                selected={selectedInd === ind ? true : false}
-                optNo={Options[ind]}
-                saveOption={saveOption}
-            />
-        );
-    });
-}
+const makeOptions = (options: string[], selectedOption: number, saveOption: (option: number) => void) => {
+	return options.map((option, index) => <Option optionIndex={index} key={option} text={option} selected={selectedOption === index ? true : false} optionNumber={Options[index]} saveOption={saveOption} />);
+};
 
 interface QuestionProps {
-    saveOption: (option: number) => void;
+	question: QuestionType;
+	currentQuestion: number;
+	selectedOption: number;
+	saveOption: (option: number) => void;
 }
 
-const Question: React.FC<QuestionProps> = ({ saveOption }) => {
-    const questionState: QuestionsState = useSelector((state: RootState) => state.question);
-    const quiz: QuizState = useSelector((state: RootState) => state.quiz);
+const Question: React.FC<QuestionProps> = ({ question, currentQuestion, selectedOption, saveOption }) => {
+	const renderOptions = useMemo(() => {
+		return makeOptions(question.options, selectedOption, saveOption);
+	}, [saveOption, question.options, selectedOption]);
 
-    const qNo = quiz.currentQuestion;
-    const question: QuestionType = questionState.questions[qNo];
+	return (
+		<Fragment>
+			<Text text={`${currentQuestion + 1} .`} fontWeight='bold' fontSize={15} />
 
-    const renderOptions = useMemo(() => {
-        return makeOptions(question.options, quiz.selectedOption, saveOption);
-    }, [saveOption, question.options, quiz.selectedOption]);
+			<QuestionWrapper>
+				<Text text={question.question} fontWeight='bold' fontSize={12} />
+			</QuestionWrapper>
 
-    return (
-        <Fragment>
-            <Text text={`${qNo + 1} .`} fontWeight="bold" fontSize={15} />
-
-            <QuestionWrapper>
-                <Text text={question.question} fontWeight="bold" fontSize={12} />
-            </QuestionWrapper>
-
-            {
-                renderOptions
-            }
-        </Fragment>
-    );
-}
+			{renderOptions}
+		</Fragment>
+	);
+};
 
 export default Question;

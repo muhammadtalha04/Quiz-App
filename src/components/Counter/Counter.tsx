@@ -1,39 +1,34 @@
 import React, { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { DECREMENT_TIMER, SET_INTERVAL } from '../../actions';
-import { RootState } from '../../store';
-import { QuizState, TimerState } from '../../types';
+import { QuizStatus } from '../../types';
 import { CounterWrapper } from './Style';
 
 interface CounterProps {
-    submit: () => void;
+	time: string;
+	intervalId: number;
+	status: QuizStatus;
+	submit: () => void;
 }
 
-const Counter: React.FC<CounterProps> = ({ submit }) => {
+const Counter: React.FC<CounterProps> = ({ time, intervalId, status, submit }) => {
+	const dispatch = useDispatch();
 
-    const dispatch = useDispatch();
-    const timer: TimerState = useSelector((state: RootState) => state.timer);
-    const quiz: QuizState = useSelector((state: RootState) => state.quiz);
+	useEffect(() => {
+		if (time === '00 : 00') {
+			submit(); // Submit the quiz
+		} else if (status === 'in-progress') {
+			if (intervalId === -1) {
+				const intvId = setInterval(() => {
+					dispatch({ type: DECREMENT_TIMER });
+				}, 1000);
 
-    useEffect(() => {
-        if (timer.timer === "00 : 00") {
-            submit();     // Submit the quiz
-        } else if (quiz.status === "in-progress") {
-            if (timer.intervalId === -1) {
-                const intvId = setInterval(() => {
-                    dispatch({ type: DECREMENT_TIMER });
-                }, 1000);
+				dispatch({ type: SET_INTERVAL, payload: { intervalId: intvId } });
+			}
+		}
+	}, [dispatch, time, intervalId, submit, status]);
 
-                dispatch({ type: SET_INTERVAL, payload: { intervalId: intvId } });
-            }
-        }
-    }, [dispatch, timer, submit, quiz.status]);
-
-    return (
-        <CounterWrapper>
-            {timer.timer}
-        </CounterWrapper>
-    );
-}
+	return <CounterWrapper>{time}</CounterWrapper>;
+};
 
 export default Counter;

@@ -42,7 +42,7 @@ interface ActionButtonsProps {
 
 const ActionButtons: React.FC<ActionButtonsProps> = ({ status, generateRandomQues, addQuestions, startQuiz, resumeQuiz, cancelQuiz }) => {
 	const renderButtons = useMemo(() => {
-		return makeButtons(status, generateRandomQues, addQuestions, startQuiz, resumeQuiz, cancelQuiz);
+		return makeButtons(status, generateRandomQues, startQuiz, resumeQuiz, cancelQuiz, addQuestions);
 	}, [status, generateRandomQues, addQuestions, startQuiz, resumeQuiz, cancelQuiz]);
 
 	return <ButtonsWrapper>{renderButtons}</ButtonsWrapper>;

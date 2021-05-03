@@ -5,7 +5,12 @@ import Text from '../Text/Text';
 import { QuestionWrapper } from './Style';
 
 const makeOptions = (options: string[], selectedOption: number, saveOption: (option: number) => void) => {
-	return options.map((option, index) => <Option optionIndex={index} key={option} text={option} selected={selectedOption === index ? true : false} optionNumber={Options[index]} saveOption={saveOption} />);
+	return options.map((option, index) => {
+		const optionSelected: boolean = selectedOption === index ? true : false;
+		const optionNumber: string = Options[index];
+
+		return <Option optionIndex={index} key={option} text={option} selected={optionSelected} optionNumber={optionNumber} saveOption={saveOption} />;
+	});
 };
 
 interface QuestionProps {

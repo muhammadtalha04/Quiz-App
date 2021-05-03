@@ -5,10 +5,10 @@ import { quizReducer } from '../reducers/QuizReducer';
 import { timerReducer } from '../reducers/TimerReducer';
 
 const RootReducer = combineReducers({
-    question: questionsReducer,
-    quiz: quizReducer,
-    timer: timerReducer,
-    form: formReducer
+	question: questionsReducer,
+	quiz: quizReducer,
+	timer: timerReducer,
+	formState: formReducer,
 });
 
 const store = createStore(RootReducer, (window as any).__REDUX_DEVTOOLS_EXTENSION__ && (window as any).__REDUX_DEVTOOLS_EXTENSION__());

@@ -10,14 +10,30 @@ const initState: TimerState = {
 
 export const timerReducer = (state: TimerState = initState, action: Action) => {
 	switch (action.type) {
-		case DECREMENT_TIMER:
-			return { ...state, timer: decrementTimer(state.time) };
+		case DECREMENT_TIMER: {
+			const decrementedTime: string = decrementTimer(state.time);
 
-		case SET_INTERVAL:
-			return { ...state, intervalId: action.payload.intervalId };
+			return {
+				...state,
+				time: decrementedTime,
+			};
+		}
+
+		case SET_INTERVAL: {
+			const intervalId: number = action.payload.intervalId;
+
+			return {
+				...state,
+				intervalId: intervalId,
+			};
+		}
 
 		case CLEAR_INTERVAL:
-			return { ...state, intervalId: -1, timer: initState.time };
+			return {
+				...state,
+				intervalId: -1,
+				time: initState.time,
+			};
 
 		default:
 			return { ...state };

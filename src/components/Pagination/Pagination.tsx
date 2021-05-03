@@ -4,7 +4,7 @@ import Icon from '../Icon/Icon';
 import { ActivePaginationItem, PaginationItem, PaginationWrapper } from './Style';
 
 const generatePageNums = (questionNumbers: string[], currentQuestion: number) => {
-	return questionNumbers.map((questionNumber) => {
+	return questionNumbers.map((questionNumber: string) => {
 		const questionNumberInt = parseInt(questionNumber);
 
 		if (questionNumberInt < currentQuestion) {

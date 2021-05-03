@@ -1,59 +1,43 @@
-import { INC_OPTIONS_COUNT, INC_QUES_COUNT, RESET_FORM, SET_CORRECT_OPTION, SET_FORM_OPTION, SET_FORM_QUESTION } from '../actions';
-import { Action, FormState } from '../types';
-import { changeFormState } from '../utils';
+import { RESET_FORM, SET_EDIT_DATA } from '../actions';
+import { SaveQuestion } from '../constants';
+import { Action, FormQuestion, FormState, FormType } from '../types';
 
-const initState: FormState = {
-    questions: [
-        {
-            question: "",
-            options: ["", ""],
-            correctOption: "",
-            numOfOptions: 2
-        }
-    ],
-    numOfQuestions: 1
-}
+const initValue: FormState = {
+	initialValues: {
+		question: '',
+		options: ['', ''],
+		correctOption: '',
+	},
+	type: 'create',
+	submitButtonText: SaveQuestion,
+	questionId: '',
+};
 
-export const formReducer = (state: FormState = initState, action: Action) => {
-    switch (action.type) {
-        case SET_FORM_QUESTION:
-            return {
-                ...state,
-                questions: changeFormState(state.questions, action.payload.index, "ques", action.payload.question)
-            };
+export const formReducer = (state: FormState = initValue, action: Action) => {
+	switch (action.type) {
+		case SET_EDIT_DATA: {
+			const initialData: FormQuestion = action.payload.initialValue;
+			const type: FormType = action.payload.type;
+			const submitButtonText: string = action.payload.submitButtonText;
+			const questionId: string = action.payload.questionId;
 
-        case SET_FORM_OPTION:
-            return {
-                ...state,
-                questions: changeFormState(state.questions, action.payload.qIndex, "option", action.payload.option, action.payload.index)
-            };
+			return {
+				...state,
+				initialValues: initialData,
+				type: type,
+				submitButtonText: submitButtonText,
+				questionId: questionId,
+			};
+		}
 
-        case SET_CORRECT_OPTION:
-            return {
-                ...state,
-                questions: changeFormState(state.questions, action.payload.index, "correctOpt", action.payload.correctOption)
-            };
+		case RESET_FORM: {
+			return {
+				...state,
+				...initValue,
+			};
+		}
 
-        case INC_OPTIONS_COUNT:
-            return {
-                ...state,
-                questions: changeFormState(state.questions, action.payload.index, "incrementOption")
-            };
-
-        case INC_QUES_COUNT:
-            return {
-                ...state,
-                numOfQuestions: state.numOfQuestions + 1,
-                questions: [...state.questions, ...initState.questions]
-            };
-
-        case RESET_FORM:
-            return {
-                ...state,
-                ...initState
-            };
-
-        default:
-            return { ...state };
-    }
-}
+		default:
+			return { ...state };
+	}
+};

@@ -1,10 +1,10 @@
-import React, { ChangeEvent, Fragment, useCallback, useState } from 'react';
+import React, { Fragment, useCallback, useState } from 'react';
 import { CancelConfirm } from './constants';
 import { GlobalStyle, Wrapper } from './Style';
 import { useDispatch, useSelector } from 'react-redux';
-import { PAUSE_QUIZ, START_QUIZ, QUIT_QUIZ, SUBMIT_QUESTION, SUBMIT_QUIZ, SET_OPTION, RESUME_QUIZ, CLEAR_INTERVAL, INCREMENT_SCORE, ADD_TIME_TAKEN, SET_QUESTIONS, SET_FORM_QUESTION, SET_FORM_OPTION, SET_CORRECT_OPTION, INC_OPTIONS_COUNT, INC_QUES_COUNT, ADD_QUESTIONS, DEFAULT_STATE, SET_INTERVAL, RESET_FORM } from './actions';
+import { PAUSE_QUIZ, START_QUIZ, QUIT_QUIZ, SUBMIT_QUESTION, SUBMIT_QUIZ, SET_OPTION, RESUME_QUIZ, CLEAR_INTERVAL, INCREMENT_SCORE, ADD_TIME_TAKEN, SET_QUESTIONS, SET_INTERVAL } from './actions';
 import Modal from './components/Modal/Modal';
-import { FormState, QuestionsState, QuizState, TimerState } from './types';
+import { QuestionsState, QuizState, TimerState } from './types';
 import { RootState } from './store';
 import { generateRandomQuestions } from './utils';
 import Header from './pages/Home/Header/Header';
@@ -16,7 +16,6 @@ const App: React.FC = () => {
 	const quiz: QuizState = useSelector((state: RootState) => state.quiz);
 	const questionState: QuestionsState = useSelector((state: RootState) => state.question);
 	const timer: TimerState = useSelector((state: RootState) => state.timer);
-	const form: FormState = useSelector((state: RootState) => state.form);
 
 	const [displayModal, setDisplayModal] = useState(false);
 	const [numOfQuestions] = useState(4);
@@ -63,9 +62,11 @@ const App: React.FC = () => {
 
 	// Triggers when user clicks on the yes button to confirm that they want to cancel quiz
 	const cancelQuiz = useCallback(() => {
+		clearInterval(timer.intervalId);
+		dispatch({ type: CLEAR_INTERVAL });
 		dispatch({ type: QUIT_QUIZ });
 		hideModal();
-	}, [dispatch, hideModal]);
+	}, [dispatch, hideModal, timer.intervalId]);
 	// ---------------------------------------------------
 
 	// Triggers when user clicks on cancel quiz button
@@ -102,80 +103,6 @@ const App: React.FC = () => {
 	);
 	// ---------------------------------------------------
 
-	// Triggers when the user clicks the add questions button
-	const addQuestions = useCallback(() => {
-		dispatch({ type: ADD_QUESTIONS });
-	}, [dispatch]);
-	// ---------------------------------------------------
-
-	// Triggers when the user clicks the cancel button when adding questions
-	const cancelAddQuestions = useCallback(() => {
-		dispatch({ type: DEFAULT_STATE });
-	}, [dispatch]);
-	// ---------------------------------------------------
-
-	// Question change handler
-	const onChangeQuestion = useCallback(
-		(event: ChangeEvent<HTMLInputElement>, qIndex: number) => {
-			dispatch({ type: SET_FORM_QUESTION, payload: { question: event.target.value, index: qIndex } });
-		},
-		[dispatch]
-	);
-	// ---------------------------------------------------
-
-	// Option change handler
-	const onChangeOption = useCallback(
-		(event: ChangeEvent<HTMLInputElement>, index: number, qIndex: number) => {
-			dispatch({ type: SET_FORM_OPTION, payload: { option: event.target.value, index: index, qIndex: qIndex } });
-		},
-		[dispatch]
-	);
-	// ---------------------------------------------------
-
-	// Correct option change handler
-	const onChangeCorrectOpt = useCallback(
-		(event: ChangeEvent<HTMLInputElement>, qIndex: number) => {
-			const value = event.target.value;
-
-			if ((parseInt(value) > 0 && parseInt(value) <= form.questions[qIndex].numOfOptions) || value === '') {
-				dispatch({ type: SET_CORRECT_OPTION, payload: { correctOption: value, index: qIndex } });
-			}
-		},
-		[dispatch, form.questions]
-	);
-	// ---------------------------------------------------
-
-	// Triggers when user clicks on add new option button
-	const addNewOption = useCallback(
-		(qIndex: number) => {
-			dispatch({ type: INC_OPTIONS_COUNT, payload: { index: qIndex } });
-		},
-		[dispatch]
-	);
-	// ---------------------------------------------------
-
-	// Triggers when user clicks on add new question button
-	const addNewQuestion = useCallback(() => {
-		dispatch({ type: INC_QUES_COUNT });
-	}, [dispatch]);
-	// ---------------------------------------------------
-
-	// Triggers when user clicks on save question button
-	const saveQuestion = useCallback(() => {
-		const questions = form.questions.map((q) => {
-			return {
-				question: q.question,
-				options: q.options,
-				correctOption: q.correctOption === '' ? 0 : parseInt(q.correctOption) - 1,
-			};
-		});
-
-		dispatch({ type: SET_QUESTIONS, payload: { questions: questions } });
-		dispatch({ type: RESET_FORM });
-		dispatch({ type: DEFAULT_STATE });
-	}, [dispatch, form]);
-	// ---------------------------------------------------
-
 	return (
 		<Fragment>
 			{/* Modal */}
@@ -185,7 +112,7 @@ const App: React.FC = () => {
 			<Wrapper>
 				<Header goBack={pauseQuiz} cancelQuiz={confirmCancel} submitQues={submitQuestion} onTimerEnd={submitQuestion} />
 
-				<Content generateRandomQues={generateRandomQues} addQuestions={addQuestions} startQuiz={startQuiz} resumeQuiz={resumeQuiz} cancelQuiz={confirmCancel} saveOption={saveOption} onQuestionChange={onChangeQuestion} onOptionChange={onChangeOption} onCorrectOptionChange={onChangeCorrectOpt} onClickAddOption={addNewOption} onClickAddQuestion={addNewQuestion} onSaveQuestion={saveQuestion} onCancel={cancelAddQuestions} />
+				<Content generateRandomQues={generateRandomQues} startQuiz={startQuiz} resumeQuiz={resumeQuiz} cancelQuiz={confirmCancel} saveOption={saveOption} />
 			</Wrapper>
 
 			<GlobalStyle />

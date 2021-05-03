@@ -1,166 +1,94 @@
-import React, { ChangeEvent, MouseEventHandler, useMemo } from 'react';
-import { useSelector } from 'react-redux';
-import { AddOption, AddQuestion, Cancel, CorrectOptPlaceholder, OptionPlaceholder, QuestionPlaceholder, SaveQuestion } from '../../constants';
-import { RootState } from '../../store';
-import { FormState } from '../../types';
+import React, { Fragment, MouseEventHandler, RefObject, useCallback } from 'react';
+import { Formik, FieldArray } from 'formik';
+import { FormElement, FormGroup, QuestionsWrapper } from './Style';
+import { AddOption, Cancel, GoBack, OptionPlaceholder, QuestionPlaceholder } from '../../constants';
 import Button from '../Button/Button';
 import Input from '../Input/Input';
-import Text from '../Text/Text';
-import { FormGroup, FormWrapper, HR, QuestionsWrapper } from './Style';
+import { FormQuestion, FormType } from '../../types';
+import { validateForm } from '../../utils';
+import InputWithCheck from '../InputWithCheck/InputWithCheck';
 
-// ================ INTERFACES ==========================
-interface OptionProps {
-    value: string[];
-    onOptionChange: (event: ChangeEvent<HTMLInputElement>, index: number, qIndex: number) => void;
-}
+// Util functions
+const makeOptionInputs = (values: FormQuestion) => {
+	return values.options.map((_, index) => {
+		const optionChecked: boolean = parseInt(values.correctOption) === index + 1 ? true : false;
+		const optionValue: string = `${index + 1}`;
 
+		return (
+			<FormGroup key={`${index}`}>
+				<InputWithCheck checked={optionChecked} name='correctOption' value={optionValue} inputName={`options.${index}`} inputPlaceholder={`${OptionPlaceholder} ${index + 1}`} />
+			</FormGroup>
+		);
+	});
+};
+
+// Props
 interface FormProps {
-    onQuestionChange: (event: ChangeEvent<HTMLInputElement>, index: number) => void;
-    onOptionChange: (event: ChangeEvent<HTMLInputElement>, index: number, qIndex: number) => void;
-    onCorrectOptionChange: (event: ChangeEvent<HTMLInputElement>, index: number) => void;
-    onClickAddOption: (qIndex: number) => void;
-    onClickAddQues: MouseEventHandler<HTMLButtonElement>;
-    onSaveQuestion: MouseEventHandler<HTMLButtonElement>;
-    onCancel: MouseEventHandler<HTMLButtonElement>;
+	initialValues: FormQuestion;
+	type: FormType;
+	submitButtonText: string;
+	formRef: RefObject<HTMLFormElement>;
+	saveQuestion: (values: FormQuestion, type: FormType) => void;
+	onCickGoBack: MouseEventHandler<HTMLButtonElement>;
+	onCancel: MouseEventHandler<HTMLButtonElement>;
 }
 
-interface QuestionProps extends FormProps, FormState {
-}
+// Component
+const Form: React.FC<FormProps> = ({ initialValues, type, submitButtonText, formRef, saveQuestion, onCickGoBack, onCancel }) => {
+	const renderOptionInputs = useCallback((values: FormQuestion) => {
+		return makeOptionInputs(values);
+	}, []);
 
-// ================ FUNCTIONS ==========================
-const makeOptionInputs = (numOfOpt: number, qNo: number, formProps: OptionProps) => {
-    const { value, onOptionChange } = formProps;
-    const optInputs: JSX.Element[] = [];
+	return (
+		<Fragment>
+			<Formik
+				initialValues={initialValues}
+				validate={validateForm}
+				enableReinitialize={true}
+				onSubmit={(values, { setSubmitting, resetForm }) => {
+					setSubmitting(false);
+					saveQuestion(values, type);
+					resetForm();
+				}}
+			>
+				{({ values, handleSubmit, isSubmitting }) => (
+					<FormElement onSubmit={handleSubmit} ref={formRef}>
+						<QuestionsWrapper>
+							{/* Question */}
+							<FormGroup>
+								<Input name='question' placeholder={QuestionPlaceholder} />
+							</FormGroup>
 
-    for (let i = 0; i < numOfOpt; i++) {
-        const elem: JSX.Element = (
-            <FormGroup key={i}>
-                <Input
-                    value={value[i]}
-                    placeholder={`${OptionPlaceholder} ${i + 1}`}
-                    onInputChange={(e) => onOptionChange(e, i, qNo)}
-                />
-            </FormGroup>
-        );
+							{/* Options along with buttons */}
+							<FieldArray name='options'>
+								{({ push }) => (
+									<Fragment>
+										{/* Options input boxes */}
+										{renderOptionInputs(values)}
 
-        optInputs.push(elem);
-    }
+										{/* Buttons group */}
+										<FormGroup>
+											{values.options.length < 4 && (
+												<Fragment>
+													{/* Add option button */}
+													<Button type='button' text={AddOption} width='auto' gradient={true} onClick={() => push('')} />
+												</Fragment>
+											)}
 
-    return optInputs;
-}
+											{/* Submit question button */}
+											<Button type='submit' text={submitButtonText} width='auto' gradient={true} margin={values.options.length < 4 ? true : false} disabled={isSubmitting} />
 
-const makeQuestions = (form: QuestionProps) => {
-    const questions: JSX.Element[] = [];
-
-    for (let i = 0; i < form.numOfQuestions; i++) {
-        const ques: JSX.Element = (
-            <QuestionsWrapper key={i}>
-                <Text text={`${i + 1}.`} fontWeight="bold" />
-
-                {/* Question */}
-                <FormGroup>
-                    <Input
-                        value={form.questions[i].question}
-                        placeholder={QuestionPlaceholder}
-                        onInputChange={(e) => form.onQuestionChange(e, i)}
-                    />
-                </FormGroup>
-
-                {/* Options */}
-                {
-                    makeOptionInputs(form.questions[i].numOfOptions, i, { value: form.questions[i].options, onOptionChange: form.onOptionChange })
-                }
-
-                {/* Correct Option */}
-                <FormGroup>
-                    <Input
-                        value={form.questions[i].correctOption}
-                        placeholder={CorrectOptPlaceholder}
-                        onInputChange={(e) => form.onCorrectOptionChange(e, i)}
-                    />
-                </FormGroup>
-
-                {/* Buttons for adding new options and saving question */}
-                <FormGroup>
-                    {
-                        form.questions[i].numOfOptions < 4 &&
-                        (
-                            // Add new option button
-                            <Button
-                                text={AddOption}
-                                width="auto"
-                                gradient={true}
-                                onClick={() => form.onClickAddOption(i)}
-                            />
-                        )
-                    }
-                </FormGroup>
-
-                <HR />
-            </QuestionsWrapper>
-        );
-
-        questions.push(ques);
-    }
-
-    return questions;
-}
-
-// ================== COMPONENT ========================
-const Form: React.FC<FormProps> = ({ onQuestionChange, onOptionChange, onCorrectOptionChange, onClickAddOption, onClickAddQues, onSaveQuestion, onCancel }) => {
-    const formState: FormState = useSelector((state: RootState) => state.form);
-
-    const renderQuestions = useMemo(() => {
-        const params: QuestionProps = {
-            questions: formState.questions,
-            numOfQuestions: formState.numOfQuestions,
-            onQuestionChange: onQuestionChange,
-            onOptionChange: onOptionChange,
-            onCorrectOptionChange: onCorrectOptionChange,
-            onClickAddOption: onClickAddOption,
-            onClickAddQues: onClickAddQues,
-            onSaveQuestion: onSaveQuestion,
-            onCancel: onCancel,
-        }
-
-        return makeQuestions(params);
-    }, [formState, onQuestionChange, onOptionChange, onCorrectOptionChange, onClickAddOption, onClickAddQues, onSaveQuestion, onCancel]);
-
-    return (
-        <FormWrapper>
-            {
-                renderQuestions
-            }
-
-            {/* Buttons for save, add, and cancel */}
-            <FormGroup>
-                {/* Save question button */}
-                <Button
-                    text={AddQuestion}
-                    width="auto"
-                    gradient={true}
-                    onClick={onClickAddQues}
-                />
-
-                {/* Save question button */}
-                <Button
-                    text={SaveQuestion}
-                    width="auto"
-                    gradient={true}
-                    onClick={onSaveQuestion}
-                    margin={true}
-                />
-
-                {/* Cancel Button */}
-                <Button
-                    text={Cancel}
-                    width="auto"
-                    gradient={true}
-                    onClick={onCancel}
-                />
-            </FormGroup>
-        </FormWrapper>
-    );
-}
+											{type === 'create' ? <Button type='button' text={GoBack} width='auto' gradient={true} margin={values.options.length < 4 ? false : true} onClick={onCickGoBack} /> : <Button type='button' text={Cancel} width='auto' gradient={true} margin={values.options.length < 4 ? false : true} onClick={onCancel} />}
+										</FormGroup>
+									</Fragment>
+								)}
+							</FieldArray>
+						</QuestionsWrapper>
+					</FormElement>
+				)}
+			</Formik>
+		</Fragment>
+	);
+};
 
 export default Form;

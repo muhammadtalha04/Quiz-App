@@ -1,6 +1,8 @@
 export type Width = 'full' | 'auto';
 export type QuizStatus = 'default' | 'in-progress' | 'paused' | 'submitted' | 'add-questions';
-export type ChangeHandlerType = 'ques' | 'option' | 'correctOpt' | 'incrementOption';
+export type TextTypes = 'default' | 'error';
+export type ButtonType = 'button' | 'submit' | 'reset' | undefined;
+export type FormType = 'create' | 'edit';
 
 export enum Options {
 	A,
@@ -16,6 +18,7 @@ export interface Action {
 
 // ---------- QUESTION ----------
 export interface QuestionType {
+	id: string;
 	question: string;
 	options: string[];
 	correctOption: number;
@@ -46,10 +49,11 @@ export interface FormQuestion {
 	question: string;
 	options: string[];
 	correctOption: string;
-	numOfOptions: number;
 }
 
 export interface FormState {
-	questions: FormQuestion[];
-	numOfQuestions: number;
+	initialValues: FormQuestion;
+	type: FormType;
+	submitButtonText: string;
+	questionId: string;
 }

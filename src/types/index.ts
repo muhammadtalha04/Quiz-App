@@ -3,6 +3,8 @@ export type QuizStatus = 'default' | 'in-progress' | 'paused' | 'submitted' | 'a
 export type TextTypes = 'default' | 'error';
 export type ButtonType = 'button' | 'submit' | 'reset' | undefined;
 export type FormType = 'create' | 'edit';
+type FormQuestionError = { [index: number]: FormQuestion };
+export type setFieldTouchedType = (field: string, isTouched?: boolean | undefined, shouldValidate?: boolean | undefined) => void;
 
 export enum Options {
 	A,
@@ -49,6 +51,11 @@ export interface FormQuestion {
 	question: string;
 	options: string[];
 	correctOption: string;
+	id?: string;
+}
+
+export interface FormValue {
+	questions: FormQuestion[];
 }
 
 export interface FormState {
@@ -56,4 +63,8 @@ export interface FormState {
 	type: FormType;
 	submitButtonText: string;
 	questionId: string;
+}
+
+export interface FormError {
+	questions: FormQuestionError;
 }

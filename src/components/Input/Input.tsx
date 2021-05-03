@@ -1,5 +1,5 @@
 import React, { Fragment } from 'react';
-import { InputElement } from './Style';
+import { InputElement, InputWrapper } from './Style';
 import { useField } from 'formik';
 import Text from '../Text/Text';
 
@@ -15,7 +15,9 @@ const Input: React.FC<InputProps> = ({ name, placeholder, hideError }) => {
 
 	return (
 		<Fragment>
-			<InputElement name={field.name} value={field.value} onChange={field.onChange} onBlur={field.onBlur} placeholder={placeholder} />
+			<InputWrapper>
+				<InputElement name={field.name} value={field.value} onChange={field.onChange} onBlur={field.onBlur} placeholder={placeholder} />
+			</InputWrapper>
 
 			{invalid && (hideError === undefined || hideError === false) && <Text text={meta.error !== undefined ? meta.error : ''} type='error' />}
 		</Fragment>

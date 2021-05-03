@@ -9,6 +9,8 @@ export const Cancel = 'Cancel';
 export const GoBack = 'Go Back';
 export const Submit = 'Submit';
 export const Finish = 'Finish';
+export const Previous = 'Previous';
+export const Next = 'Next';
 
 export const SaveQuestion = 'Save Question';
 export const UpdateQuestion = 'Update Question';
@@ -31,6 +33,3 @@ export const initTime = '01 : 30';
 export const QuestionPlaceholder = 'Question';
 export const OptionPlaceholder = 'Option';
 export const CorrectOptPlaceholder = 'Correct Option';
-
-// Questions Table
-export const TableHeadings = ['Question', 'Option 1', 'Option 2', 'Option 3', 'Option 4', 'Correct Option', ''];

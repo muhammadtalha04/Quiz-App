@@ -1,7 +1,7 @@
 import { initTime } from '../constants';
 import { questionsData } from '../data';
-import { FormQuestion, QuestionType } from '../types';
-import { FormikErrors } from 'formik';
+import { FormError, FormQuestion, FormValue, QuestionType, setFieldTouchedType } from '../types';
+import { FormikErrors, FormikTouched } from 'formik';
 
 // This function decrements one second from the timer
 export const decrementTimer = (time: string) => {
@@ -106,36 +106,47 @@ export const generateRandomQuestions = (range: number) => {
 // ------------------------------------------------------
 
 // This function validates the form created using formik
-export const validateForm = (values: FormQuestion) => {
-	const errors: FormikErrors<FormQuestion> = {};
-	const optionErrors: string[] = [];
+export const validateForm = (values: FormValue) => {
+	const errors: FormikErrors<FormError> = {};
 
-	// Validates question
-	if (!values.question) {
-		errors.question = 'Question is required';
-	}
+	values.questions.forEach((value, index) => {
+		const optionErrors: string[] = [];
+		const error: FormikErrors<FormQuestion> = {};
 
-	// Validates each option
-	values.options.forEach((option, index) => {
-		if (!option) {
-			optionErrors.push(`Option ${index + 1} is required`);
-		} else {
-			optionErrors.push('');
+		// Validates question
+		if (!value.question) {
+			error.question = 'Question is required';
+		}
+
+		// Validates each option
+		value.options.forEach((option, index) => {
+			if (!option) {
+				optionErrors.push(`Option ${index + 1} is required`);
+			} else {
+				optionErrors.push('');
+			}
+		});
+
+		// Filtering the errors to check if there is any error or not
+		const filteredOptionErrors = optionErrors.filter((option) => option !== '');
+
+		// If there are errors then storing them in options in errors
+		if (filteredOptionErrors.length > 0) {
+			error.options = optionErrors;
+		}
+
+		// Validates correct option
+		if (!value.correctOption) {
+			error.correctOption = 'Correct option is required';
+		}
+
+		if (Object.keys(error).length > 0) {
+			if (errors.questions === undefined) {
+				errors.questions = {};
+			}
+			errors.questions[index] = error;
 		}
 	});
-
-	// Filtering the errors to check if there is any error or not
-	const filteredOptionErrors = optionErrors.filter((option) => option !== '');
-
-	// If there are errors then storing them in options in errors
-	if (filteredOptionErrors.length > 0) {
-		errors.options = optionErrors;
-	}
-
-	// Validates correct option
-	if (!values.correctOption) {
-		errors.correctOption = 'Correct option is required';
-	}
 
 	return errors;
 };
@@ -173,5 +184,64 @@ export const getQuestion = (questions: QuestionType[], id: string) => {
 		options: ['', ''],
 		correctOption: -1,
 	};
+};
+// ------------------------------------------------------
+
+// Sets initial values for form
+export const setInitialValues = (questions: QuestionType[]) => {
+	let initialValues: FormQuestion[] = [];
+
+	initialValues = questions.map((singleQuestion: QuestionType) => {
+		return {
+			...singleQuestion,
+			correctOption: String(singleQuestion.correctOption + 1),
+		};
+	});
+
+	return initialValues;
+};
+// ------------------------------------------------------
+
+// Touches every field in the current index so that errors are displayed if any
+const touchFields = (questionIndex: number, setFieldTouched: setFieldTouchedType) => {
+	setFieldTouched(`questions.${questionIndex}.question`, true, true);
+	setFieldTouched(`questions.${questionIndex}.options.0`, true, true);
+	setFieldTouched(`questions.${questionIndex}.options.1`, true, true);
+	setFieldTouched(`questions.${questionIndex}.options.2`, true, true);
+	setFieldTouched(`questions.${questionIndex}.options.3`, true, true);
+	setFieldTouched(`questions.${questionIndex}.correctOption`, true, true);
+};
+// ------------------------------------------------------
+
+// Checks if the current state of form is valid or not.
+export const isFormValid = (isValid: boolean, touched: FormikTouched<FormValue>, currentQuestionIndex: number, totalQuestions: number, setFieldTouched: setFieldTouchedType) => {
+	if (currentQuestionIndex < totalQuestions - 1) {
+		touchFields(totalQuestions - 1, setFieldTouched);
+		return false;
+	}
+
+	// If there are errors
+	if (isValid === false) {
+		return false;
+	}
+
+	// If no validation errors
+	const fieldsTouchedCount: number = Object.keys(touched).length;
+
+	if (totalQuestions <= 1) {
+		if (fieldsTouchedCount === 0) {
+			touchFields(currentQuestionIndex, setFieldTouched);
+			return false;
+		}
+	} else {
+		if (currentQuestionIndex === totalQuestions - 1) {
+			if (fieldsTouchedCount === 0) {
+				touchFields(currentQuestionIndex, setFieldTouched);
+				return false;
+			}
+		}
+	}
+
+	return true;
 };
 // ------------------------------------------------------

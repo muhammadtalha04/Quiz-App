@@ -1,4 +1,4 @@
-import { QuestionType } from '../types';
+import { FormQuestion, QuestionType } from '../types';
 import { v4 as uuid } from 'uuid';
 
 export const questionsData: QuestionType[] = [
@@ -33,3 +33,9 @@ export const questionsData: QuestionType[] = [
 		correctOption: 0,
 	},
 ];
+
+export const emptyQuestion: FormQuestion = {
+	question: '',
+	options: ['', ''],
+	correctOption: '',
+};

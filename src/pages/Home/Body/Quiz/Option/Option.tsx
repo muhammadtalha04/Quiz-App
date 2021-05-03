@@ -1,6 +1,6 @@
 import React from 'react';
-import { secondary } from '../../colors';
-import Text from '../Text/Text';
+import { secondary } from '../../../../../colors';
+import Text from '../../../../../components/Text/Text';
 import { OptionNumber, OptionWrapper } from './Style';
 
 interface OptionProps {

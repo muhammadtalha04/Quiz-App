@@ -1,7 +1,7 @@
 import React, { Fragment, useMemo } from 'react';
-import { Options, QuestionType } from '../../types';
+import Text from '../../../../../components/Text/Text';
+import { Options, QuestionType } from '../../../../../types';
 import Option from '../Option/Option';
-import Text from '../Text/Text';
 import { QuestionWrapper } from './Style';
 
 const makeOptions = (options: string[], selectedOption: number, saveOption: (option: number) => void) => {

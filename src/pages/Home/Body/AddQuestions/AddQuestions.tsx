@@ -1,8 +1,8 @@
 import React, { Fragment, MouseEventHandler, RefObject } from 'react';
-import { TableHeadings } from '../../constants';
-import { FormQuestion, FormType } from '../../types';
-import Form from '../Form/Form';
-import Table from '../Table/Table';
+import Form from './Form/Form';
+import Table from '../../../../components/Table/Table';
+import { TableHeadings } from '../../../../constants';
+import { FormQuestion, FormType } from '../../../../types';
 import { HR } from './Style';
 
 interface AddQuestionsProps {

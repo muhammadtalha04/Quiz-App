@@ -8,7 +8,7 @@ import { QuestionsState, QuizState, TimerState } from './types';
 import { RootState } from './store';
 import { generateRandomQuestions } from './utils';
 import Header from './pages/Home/Header/Header';
-import Content from './pages/Home/Content/Content';
+import Body from './pages/Home/Body/Body';
 
 const App: React.FC = () => {
 	const dispatch = useDispatch();
@@ -112,7 +112,7 @@ const App: React.FC = () => {
 			<Wrapper>
 				<Header goBack={pauseQuiz} cancelQuiz={confirmCancel} submitQues={submitQuestion} onTimerEnd={submitQuestion} />
 
-				<Content generateRandomQues={generateRandomQues} startQuiz={startQuiz} resumeQuiz={resumeQuiz} cancelQuiz={confirmCancel} saveOption={saveOption} />
+				<Body generateRandomQues={generateRandomQues} startQuiz={startQuiz} resumeQuiz={resumeQuiz} cancelQuiz={confirmCancel} saveOption={saveOption} />
 			</Wrapper>
 
 			<GlobalStyle />

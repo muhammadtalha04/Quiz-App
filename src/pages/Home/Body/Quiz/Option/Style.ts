@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { black, blue, secondary } from '../../colors';
+import { black, blue, secondary } from '../../../../../colors';
 
 interface OptionProps {
 	selected: boolean;

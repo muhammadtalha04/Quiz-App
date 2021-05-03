@@ -1,12 +1,12 @@
 import React, { Fragment, MouseEventHandler, RefObject, useCallback } from 'react';
 import { Formik, FieldArray } from 'formik';
 import { FormElement, FormGroup, QuestionsWrapper } from './Style';
-import { AddOption, Cancel, GoBack, OptionPlaceholder, QuestionPlaceholder } from '../../constants';
-import Button from '../Button/Button';
-import Input from '../Input/Input';
-import { FormQuestion, FormType } from '../../types';
-import { validateForm } from '../../utils';
-import InputWithCheck from '../InputWithCheck/InputWithCheck';
+import { AddOption, Cancel, GoBack, OptionPlaceholder, QuestionPlaceholder } from '../../../../../constants';
+import Button from '../../../../../components/Button/Button';
+import Input from '../../../../../components/Input/Input';
+import { FormQuestion, FormType } from '../../../../../types';
+import { validateForm } from '../../../../../utils';
+import InputWithCheck from '../../../../../components/InputWithCheck/InputWithCheck';
 
 // Util functions
 const makeOptionInputs = (values: FormQuestion) => {

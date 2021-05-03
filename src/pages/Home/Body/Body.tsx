@@ -1,18 +1,18 @@
 import React, { Fragment, MouseEventHandler, RefObject, useCallback, useMemo, useRef } from 'react';
 import { v4 as uuid } from 'uuid';
 import { useDispatch, useSelector } from 'react-redux';
-import Question from '../../../components/Question/Question';
 import Text from '../../../components/Text/Text';
 import { UpdateQuestion } from '../../../constants';
 import { RootState } from '../../../store';
 import { FormQuestion, FormState, FormType, QuestionsState, QuestionType, QuizState, QuizStatus } from '../../../types';
-import { ContentWrapper, IconColumn, IconItem } from './Style';
+import { BodyContentWrapper, IconColumn, IconItem } from './Style';
 import Icon from '../../../components/Icon/Icon';
-import QuizResult from '../../../components/QuizResult/QuizResult';
+import QuizResult from './QuizResult/QuizResult';
 import { ADD_QUESTION, ADD_QUESTIONS, DEFAULT_STATE, DELETE_QUESTION, RESET_FORM, SET_EDIT_DATA, UPDATE_QUESTION } from '../../../actions';
 import { getQuestion } from '../../../utils';
-import AddQuestions from '../../../components/AddQuestions/AddQuestions';
-import ActionButtons from '../../../components/ActionButtons/ActionButtons';
+import ActionButtons from './ActionButtons/ActionButtons';
+import AddQuestions from './AddQuestions/AddQuestions';
+import Question from './Quiz/Question/Question';
 
 // Util Functions
 const mapQuestionsForTable = (questions: QuestionType[], editQuestion: (id: string) => void, deleteQuestion: (id: string) => void) => {
@@ -47,8 +47,8 @@ const mapQuestionsForTable = (questions: QuestionType[], editQuestion: (id: stri
 		: [];
 };
 
-// Renders the content based on the current status of the quiz app
-const makeContent = (
+// Renders the body content based on the current status of the quiz app
+const makeBodyContent = (
 	status: QuizStatus,
 	playerName: string,
 	score: number,
@@ -92,7 +92,7 @@ const makeContent = (
 };
 
 // Props
-interface ContentProps {
+interface BodyProps {
 	generateRandomQues: MouseEventHandler<HTMLButtonElement>;
 	startQuiz: MouseEventHandler<HTMLButtonElement>;
 	resumeQuiz: MouseEventHandler<HTMLButtonElement>;
@@ -101,7 +101,7 @@ interface ContentProps {
 }
 
 // Component
-const Content: React.FC<ContentProps> = ({ generateRandomQues, startQuiz, resumeQuiz, cancelQuiz, saveOption }) => {
+const Body: React.FC<BodyProps> = ({ generateRandomQues, startQuiz, resumeQuiz, cancelQuiz, saveOption }) => {
 	// States
 	const quiz: QuizState = useSelector((state: RootState) => state.quiz);
 	const questionState: QuestionsState = useSelector((state: RootState) => state.question);
@@ -188,11 +188,11 @@ const Content: React.FC<ContentProps> = ({ generateRandomQues, startQuiz, resume
 	const question: QuestionType = questionState.questions[quiz.currentQuestion];
 	const allQuestions: JSX.Element[][] = mapQuestionsForTable(questionState.questions, editQuestion, deleteQuestion);
 
-	const renderContent = useMemo(() => {
-		return makeContent(quiz.status, quiz.playerName, quiz.score, totalQuestions, quiz.timeTaken, question, quiz.currentQuestion, quiz.selectedOption, formState.initialValues, formState.type, formState.submitButtonText, allQuestions, formRef, generateRandomQues, startQuiz, resumeQuiz, cancelQuiz, saveOption, addQuestions, saveQuestion, cancelAddQuestions, cancelUpdateQuestion);
+	const renderBody = useMemo(() => {
+		return makeBodyContent(quiz.status, quiz.playerName, quiz.score, totalQuestions, quiz.timeTaken, question, quiz.currentQuestion, quiz.selectedOption, formState.initialValues, formState.type, formState.submitButtonText, allQuestions, formRef, generateRandomQues, startQuiz, resumeQuiz, cancelQuiz, saveOption, addQuestions, saveQuestion, cancelAddQuestions, cancelUpdateQuestion);
 	}, [quiz, totalQuestions, question, formState, allQuestions, formRef, generateRandomQues, startQuiz, resumeQuiz, cancelQuiz, saveOption, addQuestions, saveQuestion, cancelAddQuestions, cancelUpdateQuestion]);
 
-	return <ContentWrapper>{renderContent}</ContentWrapper>;
+	return <BodyContentWrapper>{renderBody}</BodyContentWrapper>;
 };
 
-export default Content;
+export default Body;

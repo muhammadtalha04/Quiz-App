@@ -1,7 +1,7 @@
 import React, { Fragment, MouseEventHandler, useMemo } from 'react';
-import { Random, AddQues, Play, Cancel, Resume } from '../../constants';
-import { QuizStatus } from '../../types';
-import Button from '../Button/Button';
+import { Random, AddQues, Play, Cancel, Resume } from '../../../../constants';
+import { QuizStatus } from '../../../../types';
+import Button from '../../../../components/Button/Button';
 import { ButtonsWrapper } from './Style';
 
 const makeButtons = (status: QuizStatus, generateRandomQues: MouseEventHandler<HTMLButtonElement>, startQuiz: MouseEventHandler<HTMLButtonElement>, resumeQuiz: MouseEventHandler<HTMLButtonElement>, cancelQuiz: MouseEventHandler<HTMLButtonElement>, addQuestions: MouseEventHandler<HTMLButtonElement>) => {

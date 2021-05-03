@@ -1,7 +1,7 @@
 import React from 'react';
-import { blue } from '../../colors';
-import Text from '../Text/Text';
-import Time from '../Time/Time';
+import { blue } from '../../../../colors';
+import Text from '../../../../components/Text/Text';
+import Time from '../../../../components/Time/Time';
 import { QuizStatsWrapper, Width100 } from './Style';
 
 interface QuizResultProps {

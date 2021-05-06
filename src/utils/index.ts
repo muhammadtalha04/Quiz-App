@@ -245,3 +245,93 @@ export const isFormValid = (isValid: boolean, touched: FormikTouched<FormValue>,
 	return true;
 };
 // ------------------------------------------------------
+
+// Checks if minutes or seconds are greater than 60 then fixes them
+const checkAndFixTime = (hours: string, minutes: string, seconds: string) => {
+	let hoursInt: number = parseInt(hours);
+	let minutesInt: number = parseInt(minutes);
+	let secondsInt: number = parseInt(seconds);
+
+	let fixedHours: string = hours;
+	let fixedMinutes: string = minutes;
+	let fixedSeconds: string = seconds;
+
+	let carryHours: number = 0;
+	let carryMinutes: number = 0;
+
+	if (secondsInt >= 60) {
+		carryMinutes = Math.floor(secondsInt / 60);
+		secondsInt %= 60;
+	}
+
+	minutesInt += carryMinutes;
+
+	if (minutesInt >= 60) {
+		carryHours = Math.floor(minutesInt / 60);
+		minutesInt %= 60;
+	}
+
+	hoursInt += carryHours;
+
+	fixedHours = hoursInt < 0 ? '00' : `${hoursInt >= 10 ? '' : 0}${hoursInt}`;
+	fixedMinutes = minutesInt < 0 ? '00' : `${minutesInt >= 10 ? '' : 0}${minutesInt}`;
+	fixedSeconds = secondsInt < 0 ? '00' : `${secondsInt >= 10 ? '' : 0}${secondsInt}`;
+
+	return [fixedHours, fixedMinutes, fixedSeconds];
+};
+// ------------------------------------------------------
+
+// Splits and assigns the time correctly to hours, minutes, and seconds
+export const splitTime = (time: string) => {
+	const splittedTime: string[] = time.split(':');
+	let hours: string = '00';
+	let minutes: string = '00';
+	let seconds: string = '00';
+
+	if (splittedTime.length > 0) {
+		// Removing extra spaces
+		const mappedTime = splittedTime.map((time: string) => time.replace(/ /g, ''));
+
+		// Filtering empty strings
+		const filteredTime: string[] = mappedTime.filter((time: string) => time !== '');
+		const filteredTimeLength: number = filteredTime.length;
+
+		if (filteredTimeLength > 0) {
+			switch (filteredTimeLength) {
+				case 1: {
+					seconds = filteredTime[0];
+					break;
+				}
+				case 2: {
+					minutes = filteredTime[0];
+					seconds = filteredTime[1];
+					break;
+				}
+				case 3: {
+					hours = filteredTime[0];
+					minutes = filteredTime[1];
+					seconds = filteredTime[2];
+					break;
+				}
+				default: {
+					const slicedTime = filteredTime.slice(0, 3);
+
+					hours = slicedTime[0];
+					minutes = slicedTime[1];
+					seconds = slicedTime[2];
+
+					break;
+				}
+			}
+
+			const [fixedHours, fixedMinutes, fixedSeconds] = checkAndFixTime(hours, minutes, seconds);
+
+			hours = fixedHours;
+			minutes = fixedMinutes;
+			seconds = fixedSeconds;
+		}
+	}
+
+	return [hours, minutes, seconds];
+};
+// ------------------------------------------------------

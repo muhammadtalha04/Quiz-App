@@ -2,9 +2,10 @@ import React, { Fragment, useMemo } from 'react';
 import { TimeBlock, TimeWrapper } from './Style';
 import Text from '../Text/Text';
 import { Hours, Minutes, Seconds } from '../../constants';
+import { splitTime } from '../../utils';
 
 const makeTimeBlock = (time: string) => {
-	const [hours, minutes, seconds] = time.split(' : ');
+	const [hours, minutes, seconds] = splitTime(time);
 
 	return (
 		<TimeWrapper>

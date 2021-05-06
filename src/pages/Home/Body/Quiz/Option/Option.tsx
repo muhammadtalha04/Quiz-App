@@ -13,7 +13,7 @@ interface OptionProps {
 
 const Option: React.FC<OptionProps> = ({ text, optionIndex, optionNumber, selected, saveOption }) => {
 	return (
-		<OptionWrapper selected={selected} onClick={() => saveOption(optionIndex)}>
+		<OptionWrapper className='question-options' selected={selected} onClick={() => saveOption(optionIndex)}>
 			<OptionNumber selected={selected}>{`${optionNumber} .`}</OptionNumber>
 
 			{selected === true ? <Text text={text} fontWeight='bold' margin={0} color={secondary} /> : <Text text={text} fontWeight='bold' margin={0} />}

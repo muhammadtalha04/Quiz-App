@@ -9,19 +9,19 @@ const generatePageNums = (questionNumbers: string[], currentQuestion: number) =>
 
 		if (questionNumberInt < currentQuestion) {
 			return (
-				<PaginationItem checked={true} key={questionNumber}>
+				<PaginationItem className='page-number' checked={true} key={questionNumber}>
 					<Icon icon='fa fa-check' color={secondary} />
 				</PaginationItem>
 			);
 		} else if (questionNumberInt === currentQuestion) {
 			return (
-				<ActivePaginationItem checked={false} key={questionNumber}>
+				<ActivePaginationItem className='page-number' checked={false} key={questionNumber}>
 					{questionNumberInt + 1}
 				</ActivePaginationItem>
 			);
 		} else {
 			return (
-				<PaginationItem checked={false} key={questionNumber}>
+				<PaginationItem className='page-number' checked={false} key={questionNumber}>
 					{questionNumberInt + 1}
 				</PaginationItem>
 			);

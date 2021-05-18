@@ -2,29 +2,18 @@ import React, { Fragment, MouseEventHandler, useCallback, useMemo } from 'react'
 import { v4 as uuid } from 'uuid';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../../store';
-import { FormValue, QuestionsState, QuestionType, QuizState, QuizStatus } from '../../../types';
+import { FormValue, ModalType, QuestionsState, QuestionType, QuizState, QuizStatus } from '../../../types';
 import { BodyContentWrapper } from './Style';
 import QuizResult from './QuizResult/QuizResult';
 import { ADD_QUESTIONS, DEFAULT_STATE, RESET_FORM, SET_QUESTIONS } from '../../../actions';
 import ActionButtons from './ActionButtons/ActionButtons';
 import AddQuestions from './AddQuestions/AddQuestions';
 import Question from './Quiz/Question/Question';
+import { QuestionsSaved } from '../../../constants';
 
 // Util Functions
 // Renders the body content based on the current status of the quiz app
-const makeBodyContent = (
-	quizState: QuizState,
-	totalQuestions: number,
-	allQuestions: QuestionType[],
-	generateRandomQues: MouseEventHandler<HTMLButtonElement>,
-	startQuiz: MouseEventHandler<HTMLButtonElement>,
-	resumeQuiz: MouseEventHandler<HTMLButtonElement>,
-	cancelQuiz: MouseEventHandler<HTMLButtonElement>,
-	saveOption: (option: number) => void,
-	addQuestions: MouseEventHandler<HTMLButtonElement>,
-	saveQuestion: (values: FormValue) => void,
-	cancelAddQuestions: MouseEventHandler<HTMLButtonElement>
-) => {
+const makeBodyContent = (quizState: QuizState, totalQuestions: number, allQuestions: QuestionType[], generateRandomQues: MouseEventHandler<HTMLButtonElement>, startQuiz: MouseEventHandler<HTMLButtonElement>, resumeQuiz: MouseEventHandler<HTMLButtonElement>, cancelQuiz: MouseEventHandler<HTMLButtonElement>, saveOption: (option: number) => void, addQuestions: MouseEventHandler<HTMLButtonElement>, saveQuestion: (values: FormValue) => void, cancelAddQuestions: MouseEventHandler<HTMLButtonElement>) => {
 	const status: QuizStatus = quizState.status;
 
 	switch (status) {
@@ -61,10 +50,11 @@ interface BodyProps {
 	resumeQuiz: MouseEventHandler<HTMLButtonElement>;
 	cancelQuiz: MouseEventHandler<HTMLButtonElement>;
 	saveOption: (option: number) => void;
+	showModal: (modalText: string, modalType: ModalType) => void;
 }
 
 // Component
-const Body: React.FC<BodyProps> = ({ generateRandomQues, startQuiz, resumeQuiz, cancelQuiz, saveOption }) => {
+const Body: React.FC<BodyProps> = ({ generateRandomQues, startQuiz, resumeQuiz, cancelQuiz, saveOption, showModal }) => {
 	// States
 	const quiz: QuizState = useSelector((state: RootState) => state.quiz);
 	const questionState: QuestionsState = useSelector((state: RootState) => state.question);
@@ -85,9 +75,10 @@ const Body: React.FC<BodyProps> = ({ generateRandomQues, startQuiz, resumeQuiz, 
 			});
 
 			dispatch({ type: SET_QUESTIONS, payload: { questions: questions } });
-			alert('Questions saved successfully');
+
+			showModal(QuestionsSaved, 'alert');
 		},
-		[dispatch]
+		[dispatch, showModal]
 	);
 	// ---------------------------------------------------
 

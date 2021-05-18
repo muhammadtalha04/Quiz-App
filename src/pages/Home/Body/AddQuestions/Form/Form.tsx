@@ -103,7 +103,14 @@ const Form: React.FC<FormProps> = ({ initialValues, saveQuestion, onCickGoBack }
 
 									return (
 										<QuestionsWrapper key={key} displayQueustion={displayQuestion} isLoading={loading}>
-											<FormHeader currentQuestionNumber={currentQuestionNumber} totalQuestions={totalQuestions} deleteQuestion={() => remove(questionIndex)} />
+											<FormHeader
+												currentQuestionNumber={currentQuestionNumber}
+												totalQuestions={totalQuestions}
+												deleteQuestion={() => {
+													remove(questionIndex);
+													lastQuestion(totalQuestions - 1);
+												}}
+											/>
 
 											{/* Question */}
 											<FormGroup>

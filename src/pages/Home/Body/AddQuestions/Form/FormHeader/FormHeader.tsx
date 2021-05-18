@@ -19,7 +19,7 @@ const FormHeader: React.FC<FormHeaderProps> = ({ currentQuestionNumber, totalQue
 			{currentQuestionNumber !== totalQuestions && (
 				<IconColumn>
 					<IconItem>
-						<Icon icon='fa fa-trash' onClick={deleteQuestion} />
+						<Icon icon='fa fa-trash' title='Delete Question' onClick={deleteQuestion} />
 					</IconItem>
 				</IconColumn>
 			)}

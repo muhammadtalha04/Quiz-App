@@ -25,3 +25,7 @@ export const CLEAR_INTERVAL = 'CLEAR_INTERVAL';
 // FORM
 export const SET_EDIT_DATA = 'SET_EDIT_DATA';
 export const RESET_FORM = 'RESET_FORM';
+
+// MODAL
+export const SET_MODAL_DATA = 'SET_MODAL_DATA';
+export const SET_SHOW_MODAL = 'SET_SHOW_MODAL';

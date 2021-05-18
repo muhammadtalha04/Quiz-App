@@ -18,9 +18,12 @@ export const AddOption = 'Add New Option';
 export const AddQuestion = 'Add New Question';
 
 // Modal Text
+export const RandomQuestionsSuccess = 'Random questions generated successfully';
+export const QuestionsSaved = 'Questions saved successfully';
 export const CancelConfirm = 'Are you sure you want to cancel this quiz?';
 export const Yes = 'Yes';
 export const No = 'No';
+export const Ok = 'Ok';
 
 // Time Taken Text
 export const Hours = 'Hours';

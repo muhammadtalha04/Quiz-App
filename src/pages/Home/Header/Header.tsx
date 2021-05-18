@@ -22,7 +22,7 @@ const makeHeader = (status: QuizStatus, questionNumbers: string[], currentQuesti
 					<Cols>
 						{/* Icon to pause the quiz and go back to homepage */}
 						<LeftAlign>
-							<Icon icon='fa fa-angle-left' color={secondary} size={25} bold={true} onClick={goBack} />
+							<Icon icon='fa fa-angle-left' title='Pause' color={secondary} size={25} bold={true} onClick={goBack} />
 						</LeftAlign>
 
 						{/* Remaining time to attempt the current question */}

@@ -3,6 +3,7 @@ export type QuizStatus = 'default' | 'in-progress' | 'paused' | 'submitted' | 'a
 export type TextTypes = 'default' | 'error';
 export type ButtonType = 'button' | 'submit' | 'reset' | undefined;
 export type FormType = 'create' | 'edit';
+export type ModalType = 'alert' | 'dialogue';
 type FormQuestionError = { [index: number]: FormQuestion };
 export type setFieldTouchedType = (field: string, isTouched?: boolean | undefined, shouldValidate?: boolean | undefined) => void;
 
@@ -67,4 +68,11 @@ export interface FormState {
 
 export interface FormError {
 	questions: FormQuestionError;
+}
+
+// ---------- MODAL ----------
+export interface ModalState {
+	text: string;
+	type: ModalType;
+	showModal: boolean;
 }

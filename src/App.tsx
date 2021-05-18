@@ -1,10 +1,10 @@
 import React, { Fragment, useCallback, useState } from 'react';
-import { CancelConfirm } from './constants';
+import { CancelConfirm, RandomQuestionsSuccess } from './constants';
 import { GlobalStyle, Wrapper } from './Style';
 import { useDispatch, useSelector } from 'react-redux';
-import { PAUSE_QUIZ, START_QUIZ, QUIT_QUIZ, SUBMIT_QUESTION, SUBMIT_QUIZ, SET_OPTION, RESUME_QUIZ, CLEAR_INTERVAL, INCREMENT_SCORE, ADD_TIME_TAKEN, SET_QUESTIONS, SET_INTERVAL } from './actions';
+import { PAUSE_QUIZ, START_QUIZ, QUIT_QUIZ, SUBMIT_QUESTION, SUBMIT_QUIZ, SET_OPTION, RESUME_QUIZ, CLEAR_INTERVAL, INCREMENT_SCORE, ADD_TIME_TAKEN, SET_QUESTIONS, SET_INTERVAL, SET_SHOW_MODAL, SET_MODAL_DATA } from './actions';
 import Modal from './components/Modal/Modal';
-import { QuestionsState, QuizState, TimerState } from './types';
+import { ModalState, ModalType, QuestionsState, QuizState, TimerState } from './types';
 import { RootState } from './store';
 import { generateRandomQuestions } from './utils';
 import Header from './pages/Home/Header/Header';
@@ -16,24 +16,34 @@ const App: React.FC = () => {
 	const quiz: QuizState = useSelector((state: RootState) => state.quiz);
 	const questionState: QuestionsState = useSelector((state: RootState) => state.question);
 	const timer: TimerState = useSelector((state: RootState) => state.timer);
+	const modal: ModalState = useSelector((state: RootState) => state.modal);
 
-	const [displayModal, setDisplayModal] = useState(false);
 	const [numOfQuestions] = useState(4);
 
-	// Triggers when user clicks on the modal cancel button
+	// Sets modal data and displays modal
+	const showModal = useCallback(
+		(modalText: string, modalType: ModalType) => {
+			dispatch({ type: SET_MODAL_DATA, payload: { text: modalText, type: modalType } });
+			dispatch({ type: SET_SHOW_MODAL, payload: { showModal: true } });
+		},
+		[dispatch]
+	);
+	// ---------------------------------------------------
+
+	// Triggers when user clicks on the modal cancel or ok button
 	const hideModal = useCallback(() => {
-		setDisplayModal(false);
-	}, []);
+		dispatch({ type: SET_SHOW_MODAL, payload: { showModal: false } });
+	}, [dispatch]);
 	// ---------------------------------------------------
 
 	// Triggers when user click the random questions button to generate random questions
 	const generateRandomQues = useCallback(() => {
 		const randomQues = generateRandomQuestions(numOfQuestions);
 
-		alert('Random questions generated successfully');
-
 		dispatch({ type: SET_QUESTIONS, payload: { questions: randomQues } });
-	}, [numOfQuestions, dispatch]);
+
+		showModal(RandomQuestionsSuccess, 'alert');
+	}, [numOfQuestions, dispatch, showModal]);
 	// ---------------------------------------------------
 
 	// Triggers when user clicks on play quiz button
@@ -71,8 +81,8 @@ const App: React.FC = () => {
 
 	// Triggers when user clicks on cancel quiz button
 	const confirmCancel = useCallback(() => {
-		setDisplayModal(true);
-	}, []);
+		showModal(CancelConfirm, 'dialogue');
+	}, [showModal]);
 	// ---------------------------------------------------
 
 	// Triggers when user clicks on submit/finish button
@@ -106,13 +116,13 @@ const App: React.FC = () => {
 	return (
 		<Fragment>
 			{/* Modal */}
-			{displayModal && <Modal text={CancelConfirm} onClickYes={cancelQuiz} onClickNo={hideModal} />}
+			{modal.showModal && <Modal text={modal.text} type={modal.type} onClickYes={cancelQuiz} onClickNo={hideModal} onClickOk={hideModal} />}
 
 			{/* Content */}
 			<Wrapper>
 				<Header goBack={pauseQuiz} cancelQuiz={confirmCancel} submitQues={submitQuestion} onTimerEnd={submitQuestion} />
 
-				<Body generateRandomQues={generateRandomQues} startQuiz={startQuiz} resumeQuiz={resumeQuiz} cancelQuiz={confirmCancel} saveOption={saveOption} />
+				<Body generateRandomQues={generateRandomQues} startQuiz={startQuiz} resumeQuiz={resumeQuiz} cancelQuiz={confirmCancel} saveOption={saveOption} showModal={showModal} />
 			</Wrapper>
 
 			<GlobalStyle />
